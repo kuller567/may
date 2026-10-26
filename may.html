@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Опора (MindCare) — Бережная самоподдержка</title>
+  
+  <!-- FontAwesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #FFF9F5;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #FFF0E6;
+      --bg-accent: #FFE4D6;
+      
+      --text-main: #2D2422;
+      --text-muted: #7A6862;
+      --text-light: #A39089;
+      
+      --accent-primary: #FF7E5F;
+      --accent-secondary: #FEB47B;
+      --accent-hover: #E86B4D;
+      --accent-light: #FFF0EB;
+      
+      --good-color: #2ECC71;
+      --good-bg: #E8F8F0;
+      --normal-color: #F1C40F;
+      --normal-bg: #FEF9E7;
+      --bad-color: #FF5252;
+      --bad-bg: #FFEBEE;
+      
+      --border-color: #FFE0D1;
+      --shadow-sm: 0 4px 10px rgba(255, 126, 95, 0.05);
+      --shadow-md: 0 8px 20px rgba(255, 126, 95, 0.08);
+      --shadow-lg: 0 15px 35px rgba(255, 126, 95, 0.12);
+      
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      
+      --transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    body.dark-theme {
+      --bg-primary: #1C1615;
+      --bg-surface: #27201E;
+      --bg-subtle: #332A27;
+      --bg-accent: #423632;
+      
+      --text-main: #FFF0EB;
+      --text-muted: #D1BDB7;
+      --text-light: #A39089;
+      
+      --accent-primary: #FF8F73;
+      --accent-secondary: #FFB380;
+      --accent-hover: #FFA28A;
+      --accent-light: #3A2B27;
+      
+      --border-color: #423531;
+      --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      background-image: radial-gradient(circle at 10% 10%, rgba(255, 228, 214, 0.5) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 90%, rgba(254, 180, 123, 0.25) 0%, transparent 40%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      line-height: 1.6;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .ambient-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.35;
+      animation: floatBlob 18s ease-in-out infinite alternate;
+    }
+
+    .blob-1 { top: -10%; left: -10%; width: 450px; height: 450px; background: #FF7E5F; }
+    .blob-2 { bottom: -15%; right: -10%; width: 500px; height: 500px; background: #FEB47B; animation-delay: -6s; }
+
+    @keyframes floatBlob {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(60px, 40px) scale(1.1); }
+      100% { transform: translate(-30px, 70px) scale(0.95); }
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    body.dark-theme header { background: rgba(39, 32, 30, 0.85); }
+
+    .nav-container {
+      max-width: 1200px; margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      position: relative; z-index: 1;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 1.4rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-primary), #FF416C);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: white;
+      box-shadow: 0 4px 12px rgba(255, 126, 95, 0.3);
+    }
+
+    .nav-menu { display: flex; gap: 0.3rem; list-style: none; flex-wrap: wrap; }
+
+    .nav-btn {
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-full);
+      border: none; background: transparent;
+      color: var(--text-muted); font-weight: 600; font-size: 0.88rem;
+      cursor: pointer; transition: var(--transition);
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    .nav-btn:hover { background: var(--bg-subtle); color: var(--text-main); transform: translateY(-2px); }
+    .nav-btn.active {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white; box-shadow: 0 4px 15px rgba(255, 126, 95, 0.3);
+    }
+
+    .control-btn {
+      background: var(--bg-subtle); border: 1px solid var(--border-color);
+      width: 40px; height: 40px; border-radius: 50%;
+      cursor: pointer; color: var(--text-main);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: var(--transition); margin-left: 0.4rem;
+    }
+    .control-btn:hover { transform: scale(1.08); background: var(--bg-accent); }
+    .control-btn.muted { opacity: 0.5; background: var(--bg-primary); }
+
+    main {
+      flex: 1; max-width: 1200px; width: 100%;
+      margin: 0 auto; padding: 2.5rem 1.5rem;
+      position: relative; z-index: 1;
+    }
+
+    .tab-content { display: none; animation: smoothSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .tab-content.active { display: block; }
+
+    @keyframes smoothSlideIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .section-header { margin-bottom: 2.5rem; text-align: center; max-width: 750px; margin-left: auto; margin-right: auto; }
+    .section-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.6rem; letter-spacing: -0.02em; }
+    .section-desc { color: var(--text-muted); font-size: 1.1rem; }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2rem; box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+    .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+
+    /* Knowledge Base */
+    .knowledge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.75rem; }
+    .article-card { display: flex; flex-direction: column; justify-content: space-between; height: 100%; border-top: 4px solid var(--accent-primary); }
+    .article-header { display: flex; align-items: flex-start; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .article-icon {
+      width: 52px; height: 52px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--bg-accent), var(--accent-light));
+      color: var(--accent-primary); display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(255, 126, 95, 0.15);
+    }
+    .article-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .article-snippet { color: var(--text-muted); font-size: 0.98rem; margin-bottom: 1.5rem; flex-grow: 1; }
+
+    .btn-read {
+      background: var(--bg-subtle); color: var(--accent-primary); border: none;
+      padding: 0.85rem 1.4rem; border-radius: var(--radius-md); font-weight: 700;
+      cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.6rem; width: 100%;
+    }
+    .btn-read:hover {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white; box-shadow: 0 6px 18px rgba(255, 126, 95, 0.3);
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(45, 36, 34, 0.6); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; opacity: 0; visibility: hidden; transition: var(--transition); padding: 1.5rem;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-container {
+      background: var(--bg-surface); border-radius: var(--radius-lg);
+      max-width: 850px; width: 100%; max-height: 88vh; overflow-y: auto;
+      padding: 3rem; position: relative; box-shadow: var(--shadow-lg);
+      transform: scale(0.92) translateY(20px); transition: var(--transition);
+      border: 1px solid var(--border-color);
+    }
+    .modal-overlay.active .modal-container { transform: scale(1) translateY(0); }
+    .modal-close {
+      position: absolute; top: 1.5rem; right: 1.5rem; background: var(--bg-subtle);
+      border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+      color: var(--text-muted); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: var(--transition);
+    }
+    .modal-close:hover { background: var(--accent-primary); color: white; transform: rotate(90deg); }
+
+    .article-full-content h3 { font-size: 1.45rem; margin: 1.8rem 0 0.8rem 0; color: var(--accent-primary); }
+    .article-full-content h4 { font-size: 1.15rem; margin: 1.4rem 0 0.5rem 0; }
+    .article-full-content p { margin-bottom: 1.1rem; font-size: 1.02rem; }
+    .article-full-content ul, .article-full-content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; }
+    .article-full-content li { margin-bottom: 0.6rem; }
+
+    .highlight-box {
+      background: var(--bg-subtle); border-left: 5px solid var(--accent-primary);
+      padding: 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin: 1.8rem 0; box-shadow: var(--shadow-sm);
+    }
+
+    /* Mood Tracker */
+    .year-tracker-header {
+      background: var(--bg-surface); padding: 2.2rem; border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color); margin-bottom: 2.5rem; box-shadow: var(--shadow-md); text-align: center;
+    }
+    .today-selector { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
+    .mood-buttons { display: flex; gap: 1.2rem; width: 100%; max-width: 550px; }
+    .mood-btn {
+      flex: 1; padding: 1.2rem 1rem; border-radius: var(--radius-md); border: 2px solid var(--border-color);
+      background: var(--bg-surface); cursor: pointer; transition: var(--transition);
+      display: flex; flex-direction: column; align-items: center; gap: 0.6rem; font-weight: 700;
+    }
+    .mood-btn i { font-size: 2.2rem; transition: var(--transition); }
+    .mood-btn:hover { transform: translateY(-4px) scale(1.03); }
+    .mood-btn.good:hover, .mood-btn.good.selected { border-color: var(--good-color); background: var(--good-bg); color: #1E8449; }
+    .mood-btn.normal:hover, .mood-btn.normal.selected { border-color: var(--normal-color); background: var(--normal-bg); color: #B7950B; }
+    .mood-btn.bad:hover, .mood-btn.bad.selected { border-color: var(--bad-color); background: var(--bad-bg); color: #C0392B; }
+
+    .today-note-input {
+      width: 100%; max-width: 550px; padding: 0.9rem 1.2rem; border-radius: var(--radius-md);
+      border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); font-family: inherit; font-size: 0.98rem;
+    }
+
+    .btn-save-mood {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white; border: none; padding: 0.9rem 2.4rem; border-radius: var(--radius-full);
+      font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 126, 95, 0.3);
+    }
+    .btn-save-mood:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 126, 95, 0.45); }
+
+    .year-grid-container {
+      background: var(--bg-surface); padding: 2.2rem; border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color); box-shadow: var(--shadow-md); overflow-x: auto;
+    }
+    .year-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.8rem; }
+    .legend { display: flex; align-items: center; gap: 1.2rem; font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+    .dot { width: 14px; height: 14px; border-radius: 4px; }
+    .dot.empty { background: var(--bg-subtle); border: 1px solid var(--border-color); }
+    .dot.good { background: var(--good-color); }
+    .dot.normal { background: var(--normal-color); }
+    .dot.bad { background: var(--bad-color); }
+
+    .year-months-label {
+      display: grid; grid-template-columns: repeat(12, 1fr); gap: 10px;
+      font-size: 0.85rem; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; text-align: center; min-width: 920px;
+    }
+    .year-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 10px; min-width: 920px; }
+    .month-col {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; align-content: start;
+      background: var(--bg-primary); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border-color);
+    }
+    .day-square {
+      aspect-ratio: 1; border-radius: 5px; background: var(--bg-subtle); border: 1px solid var(--border-color);
+      cursor: pointer; position: relative; transition: var(--transition);
+    }
+    .day-square:hover { transform: scale(1.3); z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .day-square.good { background: var(--good-color); border-color: var(--good-color); }
+    .day-square.normal { background: var(--normal-color); border-color: var(--normal-color); }
+    .day-square.bad { background: var(--bad-color); border-color: var(--bad-color); }
+    .day-square.today { outline: 3px solid var(--accent-primary); outline-offset: 1px; }
+
+    /* Practices Section */
+    .practices-container { display: flex; flex-direction: column; gap: 2.2rem; }
+    .practice-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-md); }
+
+    .breathing-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem 0; }
+    .breathing-circle-outer {
+      width: 250px; height: 250px; border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-light) 0%, rgba(255,126,95,0.2) 100%);
+      display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 2.5rem;
+      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 35px rgba(255, 126, 95, 0.2);
+    }
+    .breathing-circle-inner {
+      width: 155px; height: 155px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-weight: 700; text-align: center; box-shadow: 0 10px 25px rgba(255, 126, 95, 0.4); transition: var(--transition);
+    }
+    .breathing-phase { font-size: 1.25rem; margin-bottom: 0.2rem; }
+    .breathing-timer { font-size: 2.4rem; font-weight: 800; }
+
+    .technique-selector { display: flex; gap: 0.8rem; margin-bottom: 2rem; flex-wrap: wrap; justify-content: center; }
+    .tech-btn {
+      padding: 0.6rem 1.2rem; border-radius: var(--radius-full); border: 1px solid var(--border-color);
+      background: var(--bg-primary); color: var(--text-muted); cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: var(--transition);
+    }
+    .tech-btn.active {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(255, 126, 95, 0.3);
+    }
+
+    .grounding-step { display: none; background: var(--bg-subtle); padding: 1.8rem; border-radius: var(--radius-md); border-left: 5px solid var(--accent-primary); }
+    .grounding-step.active { display: block; }
+    .step-number { font-size: 2.5rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem; }
+    .grounding-nav { display: flex; justify-content: space-between; margin-top: 1.5rem; }
+
+    /* Journal & Support Sections */
+    .journal-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .journal-textarea {
+      width: 100%; min-height: 140px; padding: 1.2rem; border-radius: var(--radius-md);
+      border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); font-family: inherit; font-size: 1rem; resize: vertical;
+    }
+    
+    .journal-entries {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+    
+    .entry-card {
+      background: var(--bg-subtle);
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    
+    .entry-card:hover {
+      border-color: var(--accent-primary);
+      background: var(--bg-accent);
+      transform: translateY(-2px);
+    }
+    
+    .entry-date {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+    
+    .entry-snippet {
+      font-size: 1rem;
+      color: var(--text-main);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.5;
+    }
+
+    /* Modal Text Auto-wrap Fix */
+    #journalModalText {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      margin-bottom: 1.5rem;
+      color: var(--text-main);
+    }
+
+    .support-card-display {
+      background: linear-gradient(135deg, #FFF0EB 0%, #FFE4D6 100%);
+      border-radius: var(--radius-lg); padding: 3.5rem 2rem; text-align: center; min-height: 260px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 1.8rem;
+      border: 2px dashed var(--accent-primary); box-shadow: inset 0 0 20px rgba(255,126,95,0.05);
+    }
+    .support-text { font-size: 1.3rem; font-weight: 700; color: var(--text-main); line-height: 1.6; }
+
+    footer {
+      background: var(--bg-surface); border-top: 1px solid var(--border-color);
+      padding: 2.5rem 1.5rem; margin-top: auto; text-align: center; color: var(--text-muted); font-size: 0.9rem; position: relative; z-index: 1;
+    }
+    .disclaimer { max-width: 820px; margin: 0 auto 1.2rem auto; font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-sun"></i></div>
+        <span>Опора</span>
+      </a>
+      <ul class="nav-menu">
+        <li><button class="nav-btn active" onclick="switchTab('knowledge')"><i class="fa-solid fa-book-open"></i> Знания</button></li>
+        <li><button class="nav-btn" onclick="switchTab('mood')"><i class="fa-solid fa-calendar-days"></i> Календарь</button></li>
+        <li><button class="nav-btn" onclick="switchTab('practices')"><i class="fa-solid fa-wind"></i> Практики</button></li>
+        <li><button class="nav-btn" onclick="switchTab('journal')"><i class="fa-solid fa-pen-to-square"></i> Дневник</button></li>
+        <li><button class="nav-btn" onclick="switchTab('support')"><i class="fa-solid fa-heart"></i> Поддержка</button></li>
+      </ul>
+      <div style="display: flex; align-items: center;">
+        <button class="control-btn" id="soundToggle" onclick="toggleSound()" title="Включить/Выключить звук">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+        <button class="control-btn" id="themeToggle" onclick="toggleTheme()" title="Сменить тему">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- SECTION 1: KNOWLEDGE BASE -->
+    <section id="knowledge" class="tab-content active">
+      <div class="section-header">
+        <h1 class="section-title">База знаний и самопомощи</h1>
+        <p class="section-desc">Глубокие практические руководства по доказательной психотерапии для самостоятельной проработки сложных состояний.</p>
+      </div>
+
+      <div class="knowledge-grid">
+        <div class="card article-card">
+          <div>
+            <div class="article-header">
+              <div class="article-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+              <div>
+                <h3 class="article-title">Депрессия и апатия</h3>
+                <span style="font-size: 0.82rem; color: var(--text-light);">Время чтения: 12 мин</span>
+              </div>
+            </div>
+            <p class="article-snippet">Биохимические корни упадка сил, разрушение депрессивных спиралей через микро-поведенческую активацию и когнитивную гибкость.</p>
+          </div>
+          <button class="btn-read" onclick="openArticle('depression')">Читать подробно <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div class="card article-card">
+          <div>
+            <div class="article-header">
+              <div class="article-icon"><i class="fa-solid fa-heart"></i></div>
+              <div>
+                <h3 class="article-title">Одиночество и изоляция</h3>
+                <span style="font-size: 0.82rem; color: var(--text-light);">Время чтения: 10 мин</span>
+              </div>
+            </div>
+            <p class="article-snippet">Разбор экзистенциального одиночества, преодоление страха отвержения и формирование безопасного контакта с собой и миром.</p>
+          </div>
+          <button class="btn-read" onclick="openArticle('loneliness')">Читать подробно <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div class="card article-card">
+          <div>
+            <div class="article-header">
+              <div class="article-icon"><i class="fa-solid fa-bolt"></i></div>
+              <div>
+                <h3 class="article-title">Тревога, страх и паника</h3>
+                <span style="font-size: 0.82rem; color: var(--text-light);">Время чтения: 14 мин</span>
+              </div>
+            </div>
+            <p class="article-snippet">Как устроена симпатическая нервная система, почему случаются ложные тревожные сигналы и пошаговые протоколы самопомощи.</p>
+          </div>
+          <button class="btn-read" onclick="openArticle('anxiety')">Читать подробно <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div class="card article-card">
+          <div>
+            <div class="article-header">
+              <div class="article-icon"><i class="fa-solid fa-fire"></i></div>
+              <div>
+                <h3 class="article-title">Эмоциональное выгорание</h3>
+                <span style="font-size: 0.82rem; color: var(--text-light);">Время чтения: 11 мин</span>
+              </div>
+            </div>
+            <p class="article-snippet">4 фазы истощения, синдром самозванца, жесткие личные границы и возвращение внутренних ресурсов.</p>
+          </div>
+          <button class="btn-read" onclick="openArticle('burnout')">Читать подробно <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div class="card article-card">
+          <div>
+            <div class="article-header">
+              <div class="article-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+              <div>
+                <h3 class="article-title">Чувство вины и стыда</h3>
+                <span style="font-size: 0.82rem; color: var(--text-light);">Время чтения: 10 мин</span>
+              </div>
+            </div>
+            <p class="article-snippet">Отличие здоровой вины от токсичного стыда. Практики самосострадания и работа с внутренним критиком.</p>
+          </div>
+          <button class="btn-read" onclick="openArticle('guilt')">Читать подробно <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: YEAR MOOD TRACKER -->
+    <section id="mood" class="tab-content">
+      <div class="section-header">
+        <h1 class="section-title">Календарь настроения</h1>
+        <p class="section-desc">Ежедневный трекер за 2026 год. Отмечайте своё состояние только **сегодня**. Прошлые дни доступны для просмотра.</p>
+      </div>
+
+      <div class="year-tracker-header">
+        <div class="today-selector">
+          <h3>Отметка за сегодня: <span style="color: var(--accent-primary);">26 Октября 2026</span></h3>
+          <div class="mood-buttons">
+            <button class="mood-btn good" onclick="selectTodayMood('good')">
+              <i class="fa-solid fa-face-smile"></i>
+              <span>Хорошо</span>
+            </button>
+            <button class="mood-btn normal" onclick="selectTodayMood('normal')">
+              <i class="fa-solid fa-face-meh"></i>
+              <span>Нормально</span>
+            </button>
+            <button class="mood-btn bad" onclick="selectTodayMood('bad')">
+              <i class="fa-solid fa-face-frown"></i>
+              <span>Плохо</span>
+            </button>
+          </div>
+          <input type="text" id="todayNote" class="today-note-input" placeholder="Короткая заметка дня (по желанию)...">
+          <button class="btn-save-mood" onclick="saveTodayMood()"><i class="fa-solid fa-check"></i> Сохранить отметку</button>
+        </div>
+      </div>
+
+      <div class="year-grid-container">
+        <div class="year-title-bar">
+          <h3 style="font-weight: 800; font-size: 1.25rem;"><i class="fa-solid fa-calendar"></i> Весь 2026 год</h3>
+          <div class="legend">
+            <div class="legend-item"><div class="dot empty"></div> Пусто</div>
+            <div class="legend-item"><div class="dot good"></div> Хорошо</div>
+            <div class="legend-item"><div class="dot normal"></div> Нормально</div>
+            <div class="legend-item"><div class="dot bad"></div> Плохо</div>
+          </div>
+        </div>
+
+        <div class="year-months-label">
+          <div>Янв</div><div>Фев</div><div>Мар</div><div>Апр</div>
+          <div>Май</div><div>Июн</div><div>Июл</div><div>Авг</div>
+          <div>Сен</div><div>Окт</div><div>Ноя</div><div>Дек</div>
+        </div>
+
+        <div class="year-grid" id="yearGrid2026"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: PRACTICES -->
+    <section id="practices" class="tab-content">
+      <div class="section-header">
+        <h1 class="section-title">Практики и Релаксация</h1>
+        <p class="section-desc">Телесные и дыхательные техники для моментального снижения стресса и активации парасимпатической системы.</p>
+      </div>
+
+      <div class="practices-container">
+        <div class="practice-card">
+          <h2 style="margin-bottom: 0.5rem; font-size: 1.5rem; color: var(--accent-primary);"><i class="fa-solid fa-wind"></i> Дыхательный тренажёр</h2>
+          <div class="highlight-box" style="margin: 1.2rem 0;">
+            <p><strong>Физиология процесса:</strong> Медленное дыхание с удлиненным выдохом стимулирует блуждающий нерв, снижает пульс и снимает избыточный уровень кортизола.</p>
+          </div>
+          <div class="technique-selector">
+            <button class="tech-btn active" onclick="setBreathingTech('478', this)">Сон и снятие стресса (4-7-8)</button>
+            <button class="tech-btn" onclick="setBreathingTech('box', this)">Квадратное дыхание (4-4-4-4)</button>
+            <button class="tech-btn" onclick="setBreathingTech('relax', this)">Быстрый выдох (2-4)</button>
+          </div>
+          <div class="breathing-wrapper">
+            <div class="breathing-circle-outer" id="breathOuter">
+              <div class="breathing-circle-inner" id="breathInner">
+                <span class="breathing-phase" id="breathPhase">Готов?</span>
+                <span class="breathing-timer" id="breathTimer">0</span>
+              </div>
+            </div>
+            <button class="btn-save-mood" id="breathStartBtn" onclick="toggleBreathing()"><i class="fa-solid fa-play"></i> Начать практику</button>
+          </div>
+        </div>
+
+        <div class="practice-card">
+          <h2 style="margin-bottom: 0.5rem; font-size: 1.5rem; color: var(--accent-primary);"><i class="fa-solid fa-anchor"></i> Заземление 5-4-3-2-1</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Возвращает из тревожных мыслей в реальность через 5 органов чувств.</p>
+          <div class="grounding-stepper">
+            <div class="grounding-step active" id="gStep1">
+              <div class="step-number">5</div>
+              <h3>Найдите 5 предметов вокруг вас</h3>
+              <p style="margin-top: 0.5rem;">Посмотрите по сторонам. Назовите про себя 5 вещей, которые видите.</p>
+            </div>
+            <div class="grounding-step" id="gStep2">
+              <div class="step-number">4</div>
+              <h3>Ощутите 4 физических прикосновения</h3>
+              <p style="margin-top: 0.5rem;">Почувствуйте стопы на полу, одежду, опору под собой.</p>
+            </div>
+            <div class="grounding-step" id="gStep3">
+              <div class="step-number">3</div>
+              <h3>Услышьте 3 звука</h3>
+              <p style="margin-top: 0.5rem;">Прислушайтесь к звукам вокруг вас или своему дыханию.</p>
+            </div>
+            <div class="grounding-step" id="gStep4">
+              <div class="step-number">2</div>
+              <h3>Уловите 2 запаха</h3>
+              <p style="margin-top: 0.5rem;">Постарайтесь почувствовать два аромата в пространстве.</p>
+            </div>
+            <div class="grounding-step" id="gStep5">
+              <div class="step-number">1</div>
+              <h3>Ощутите 1 вкус</h3>
+              <p style="margin-top: 0.5rem;">Сделайте глоток воды или обратите внимание на вкус во рту.</p>
+            </div>
+            <div class="grounding-nav">
+              <button class="nav-btn" id="gPrevBtn" onclick="changeGroundingStep(-1)" disabled><i class="fa-solid fa-arrow-left"></i> Назад</button>
+              <button class="btn-save-mood" id="gNextBtn" onclick="changeGroundingStep(1)">Далее <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: JOURNAL -->
+    <section id="journal" class="tab-content">
+      <div class="section-header">
+        <h1 class="section-title">Личный дневник мыслей</h1>
+        <p class="section-desc">Выплесните свои переживания на бумагу. Записи выстроены вертикальным столбиком. Нажмите на любую запись, чтобы развернуть её целиком.</p>
+      </div>
+
+      <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <form class="journal-form" onsubmit="saveJournalEntry(event)">
+          <textarea class="journal-textarea" id="journalText" placeholder="Что происходит у вас внутри прямо сейчас? Опишите без цензуры..." required></textarea>
+          <button type="submit" class="btn-save-mood"><i class="fa-solid fa-floppy-disk"></i> Сохранить запись</button>
+        </form>
+        
+        <!-- Vertical Column Container -->
+        <div class="journal-entries" id="journalList"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: SUPPORT -->
+    <section id="support" class="tab-content">
+      <div class="section-header">
+        <h1 class="section-title">Теплая Поддержка</h1>
+        <p class="section-desc">Получите бережное послание и слова одобрения, когда чувствуете себя уязвимо.</p>
+      </div>
+
+      <div class="card" style="max-width: 700px; margin: 0 auto; text-align: center;">
+        <div class="support-card-display">
+          <p class="support-text" id="supportText">Нажмите кнопку ниже, чтобы услышать теплые слова поддержки.</p>
+        </div>
+        <button class="btn-save-mood" style="width: 100%;" onclick="generateSupport()"><i class="fa-solid fa-wand-magic-sparkles"></i> Получить поддержку</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modals -->
+  <div class="modal-overlay" id="articleModal">
+    <div class="modal-container">
+      <button class="modal-close" onclick="closeArticle()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="article-full-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="dayInfoModal">
+    <div class="modal-container" style="max-width: 480px;">
+      <button class="modal-close" onclick="closeDayInfo()"><i class="fa-solid fa-xmark"></i></button>
+      <h3 id="dayInfoTitle" style="margin-bottom: 1rem;">Информация за день</h3>
+      <div id="dayInfoContent"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="journalModal">
+    <div class="modal-container" style="max-width: 650px;">
+      <button class="modal-close" onclick="closeJournalModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div id="journalModalDate" style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 0.5rem; font-weight: 700;"></div>
+      <div id="journalModalText"></div>
+      <button class="btn-read" style="background: var(--bad-bg); color: var(--bad-color); margin-top: 1rem;" id="deleteJournalBtn"><i class="fa-solid fa-trash"></i> Удалить запись</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="disclaimer">
+      <strong>Важное примечание:</strong> Проект «Опора» создан в информационных и самовспомогательных целях и не заменяет профессиональную психотерапевтическую или медицинскую помощь. Если вы находитесь в кризисном состоянии, пожалуйста, обратитесь к специалисту или на единый телефон доверия: <strong>8-800-200-01-22</strong> (РФ).
+    </div>
+    <p>&copy; 2026 Опора (MindCare). Бережное отношение к себе.</p>
+  </footer>
+
+  <script>
+    /* ORGANIC KALIMBA & SINGING BOWL AUDIO SYNTHESIZER */
+    let audioCtx = null;
+    let isSoundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    window.addEventListener('click', () => { initAudio(); }, { once: true });
+
+    function toggleSound() {
+      isSoundEnabled = !isSoundEnabled;
+      const btn = document.getElementById('soundToggle');
+      if (isSoundEnabled) {
+        btn.classList.remove('muted');
+        btn.innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
+        playKalimbaNote(523.25);
+      } else {
+        btn.classList.add('muted');
+        btn.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`;
+      }
+    }
+
+    function playKalimbaNote(freq = 440) {
+      if (!isSoundEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      } catch(e){}
+    }
+
+    function playSuccessChime() {
+      if (!isSoundEnabled) return;
+      initAudio();
+      try {
+        const chord = [523.25, 659.25, 783.99, 1046.50];
+        chord.forEach((f, i) => {
+          setTimeout(() => playKalimbaNote(f), i * 70);
+        });
+      } catch(e){}
+    }
+
+    function playBreathingTone(phase, duration) {
+      if (!isSoundEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        const now = audioCtx.currentTime;
+
+        if (phase === 'Вдох') {
+          osc.frequency.setValueAtTime(216, now);
+          osc.frequency.exponentialRampToValueAtTime(432, now + duration);
+          gain.gain.setValueAtTime(0.01, now);
+          gain.gain.linearRampToValueAtTime(0.1, now + duration * 0.7);
+          gain.gain.linearRampToValueAtTime(0.001, now + duration);
+        } else if (phase === 'Выдох') {
+          osc.frequency.setValueAtTime(432, now);
+          osc.frequency.exponentialRampToValueAtTime(216, now + duration);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + duration);
+        } else {
+          osc.frequency.setValueAtTime(324, now);
+          gain.gain.setValueAtTime(0.04, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + duration);
+        }
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      } catch(e){}
+    }
+
+    const ARTICLES = {
+      depression: `
+        <h2><i class="fa-solid fa-cloud-sun"></i> Депрессия и апатия: Полное руководство</h2>
+        <p>Депрессия — это не проявление слабости или лени. Это серьезное психофизиологическое состояние, при котором нарушается нейромедиаторный обмен (дефицит серотонина, норадреналина и дофамина), истощаются энергетические ресурсы центральной нервной системы и блокируется способность испытывать радость (ангедония).</p>
+        
+        <h3>Как формируется «Депрессивная спираль»?</h3>
+        <p>Когда человек попадает в депрессию, его мозг сигнализирует об угрозе истощения и включает режим энергосбережения. Появляется нежелание вставать, общаться, решать дела. Возникают автоматические негативные мысли: <em>«Я ни на что не годен»</em>, <em>«У меня ничего не получится»</em>. Отказ от дел лишает мозг дофаминового подкрепления, из-за чего апатия становится еще глубже.</p>
+        
+        <div class="highlight-box">
+          <strong>Фундаментальный закон КПТ в депрессии:</strong> Мотивация и энергия не предшествуют действию — они появляются <em>после</em> него. Ждать прилива сил бесполезно; действовать приходится через «не хочу», начиная с микрошагов.
+        </div>
+
+        <h3>Пошаговый алгоритм выхода из апатии:</h3>
+        <ol>
+          <li><strong>Микро-декомпозиция задач:</strong> Разделите дело на смехотворно маленькие этапы. Не «убраться в комнате», а «поставить чашку в раковину».</li>
+          <li><strong>Поведенческая активация:</strong> Составьте список дел, которые давали ресурс в прошлом, и планируйте хотя бы одно из них в день.</li>
+          <li><strong>Дневник побед:</strong> Фиксируйте даже самые маленькие достижения (почистил зубы, поел, открыл окно).</li>
+        </ol>
+      `,
+      loneliness: `
+        <h2><i class="fa-solid fa-heart"></i> Одиночество и социальная изоляция</h2>
+        <p>Одиночество — это субъективное и тягостное переживание нехватки значимых эмоциональных связей. Важно различать триаду:</p>
+        <ul>
+          <li><strong>Уединение:</strong> Добровольное пребывание наедине с собой, наполняющее ресурсом.</li>
+          <li><strong>Эмоциональное одиночество:</strong> Отсутствие глубокого доверительного контакта с кем-то одним (партнером, близким другом).</li>
+          <li><strong>Социальное одиночество:</strong> Отсутствие принадлежности к группе единомышленников.</li>
+        </ul>
+
+        <div class="highlight-box">
+          <strong>Ловушка страха отвержения:</strong> Чувство одиночества порождает гиперчувствительность к критике. Человек начинает бессознательно отталкивать людей первыми, чтобы не испытать боль отвержения.
+        </div>
+
+        <h3>Стратегии преодоления:</h3>
+        <ul>
+          <li>Развитие самосострадания (Acceptance and Commitment Therapy): научитесь быть лучшим другом самому себе.</li>
+          <li>Постепенное расширение круга контактов через клубы по интересам, волонтерство или творческие мастерские.</li>
+          <li>Безопасные микро-контакты: открытый диалог с бариста, улыбка прохожему, участие в чатах по интересам.</li>
+        </ul>
+      `,
+      anxiety: `
+        <h2><i class="fa-solid fa-bolt"></i> Тревога, страх и панические атаки</h2>
+        <p>Тревога — это эволюционный механизм безопасности, направленный на предвосхищение будущих угроз. Однако при хроническом стрессе эта система сбоит, и мозг начинает воспринимать повседневные задачи как смертельную опасность.</p>
+
+        <h3>Анатомия панической атаки:</h3>
+        <p>Паническая атака — это внезапный выброс адреналина в кровь, активирующий симпатическую нервную систему. Учащается сердцебиение, возникает нехватка воздуха, дрожь в конечностях и страх сойти с ума или умереть.</p>
+
+        <div class="highlight-box">
+          <strong>Важнейший факт:</strong> От панической атаки физически невозможно умереть или сойти с ума. Это пик выброса адреналина, который всегда самостоятельно затухает через 10–15 минут.
+        </div>
+
+        <h3>Протокол самопомощи при приступе:</h3>
+        <ol>
+          <li><strong>Замедление дыхания:</strong> Удлиненный выдох (техника 4-7-8 или дыхание по квадрату).</li>
+          <li><strong>Заземление 5-4-3-2-1:</strong> Переключение внимания с внутренних пугающих мыслей на внешние объекты в комнате.</li>
+          <li><strong>Отказ от борьбы:</strong> Не пытайтесь подавить панику силой; скажите себе: «Это волна адреналина, она пройдет».</li>
+        </ol>
+      `,
+      burnout: `
+        <h2><i class="fa-solid fa-fire"></i> Эмоциональное выгорание</h2>
+        <p>Выгорание развивается постепенно в результате хронического стресса на работе или учебе, когда затраты ресурсов (эмоциональных, физических, когнитивных) многократно превышают их восполнение.</p>
+
+        <h3>Стадии выгорания:</h3>
+        <ol>
+          <li><strong>Энтузиазм и гиперинвестиция:</strong> Работа на износ ради высокой цели.</li>
+          <li><strong>Истощение и стагнация:</strong> Появление хронической усталости, цинизма и отстраненности.</li>
+          <li><strong>Деформация личности:</strong> Потеря смыслов, ощущение безысходности, психосоматические проявления (мигрени, скачки давления).</li>
+        </ol>
+
+        <div class="highlight-box">
+          <strong>Выход из выгорания:</strong> Требует не просто «отдыха на выходных», а глубокого пересмотра жизненных приоритетов, установки жестких границ и отказа от токсичных нагрузок.
+        </div>
+      `,
+      guilt: `
+        <h2><i class="fa-solid fa-hand-holding-heart"></i> Проработка чувства вины и стыда</h2>
+        <p>Вина и стыд — социальные регуляторы поведения, но они часто становятся деструктивными:</p>
+        <ul>
+          <li><strong>Вина:</strong> «Я совершил плохой поступок». Конструктивна, если побуждает исправить ошибку и извиниться.</li>
+          <li><strong>Стыд:</strong> «Я плохой / дефектный человек». Токсичен и разрушает самооценку, заставляя человека прятаться.</li>
+        </ul>
+
+        <div class="highlight-box">
+          <strong>Техника прощения себя:</strong> Отделите свою личность от своего поступка. Вы — это вы, а ошибка — это лишь приобретенный опыт, который можно исправить.
+        </div>
+      `
+    };
+
+    const SUPPORT_MESSAGES = [
+      "Вы делаете всё, что в ваших силах, и этого абсолютно достаточно.",
+      "Чувствовать усталость или грусть — это нормально. Вы имеете право на отдых.",
+      "Трудные времена не длятся вечно, даже если сейчас кажется иначе.",
+      "Вы гораздо сильнее и устойчивее, чем думает ваш внутренний критик.",
+      "Дайте себе время. Маленькие шаги тоже продвигают вас вперед.",
+      "Прямо сейчас вы в безопасности. Сделайте глубокий вдох и выдох.",
+      "Ваша ценность не определяется вашей продуктивностью.",
+      "Относитесь к себе так же бережно, как вы отнеслись бы к лучшему другу."
+    ];
+
+    let moodData = JSON.parse(localStorage.getItem('mindcare_moods_2026')) || {};
+    let journalData = JSON.parse(localStorage.getItem('mindcare_journal')) || [];
+    let selectedTodayMoodVal = null;
+    let currentJournalIdToDel = null;
+    const TODAY_KEY = "2026-10-26";
+
+    function switchTab(tabId) {
+      playKalimbaNote(587.33);
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+      if (tabId === 'mood') renderYearGrid();
+    }
+
+    function toggleTheme() {
+      playKalimbaNote(659.25);
+      document.body.classList.toggle('dark-theme');
+      const icon = document.querySelector('#themeToggle i');
+      icon.className = document.body.classList.contains('dark-theme') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    function openArticle(key) {
+      playKalimbaNote(698.46);
+      document.getElementById('modalContent').innerHTML = ARTICLES[key] || '';
+      document.getElementById('articleModal').classList.add('active');
+    }
+
+    function closeArticle() {
+      playKalimbaNote(523.25);
+      document.getElementById('articleModal').classList.remove('active');
+    }
+
+    function selectTodayMood(m) {
+      playKalimbaNote(783.99);
+      selectedTodayMoodVal = m;
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelector(`.mood-btn.${m}`).classList.add('selected');
+    }
+
+    function saveTodayMood() {
+      if (!selectedTodayMoodVal) { alert("Выберите настроение за сегодня!"); return; }
+      moodData[TODAY_KEY] = { mood: selectedTodayMoodVal, note: document.getElementById('todayNote').value.trim() };
+      localStorage.setItem('mindcare_moods_2026', JSON.stringify(moodData));
+      playSuccessChime();
+      alert("Отметка за сегодня сохранена!");
+      renderYearGrid();
+    }
+
+    function renderYearGrid() {
+      const grid = document.getElementById('yearGrid2026');
+      grid.innerHTML = '';
+      const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      const months = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
+
+      for (let m = 0; m < 12; m++) {
+        const col = document.createElement('div');
+        col.className = 'month-col';
+        for (let d = 1; d <= days[m]; d++) {
+          const dateStr = `2026-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const sq = document.createElement('div');
+          sq.className = 'day-square';
+          const rec = moodData[dateStr];
+          if (rec) {
+            sq.classList.add(rec.mood);
+            sq.setAttribute('data-tooltip', `${d} ${months[m]}: ${rec.mood === 'good' ? 'Хорошо' : rec.mood === 'normal' ? 'Нормально' : 'Плохо'}`);
+          }
+          if (dateStr === TODAY_KEY) sq.classList.add('today');
+          sq.onclick = () => showDayInfo(dateStr, rec);
+          col.appendChild(sq);
+        }
+        grid.appendChild(col);
+      }
+    }
+
+    function showDayInfo(dateStr, record) {
+      playKalimbaNote(523.25);
+      const content = document.getElementById('dayInfoContent');
+      content.innerHTML = record 
+        ? `<p><strong>Настроение:</strong> ${record.mood}</p><p><strong>Заметка:</strong> ${record.note || 'Нет'}</p>`
+        : `<p style="color:var(--text-muted);">Запись отсутствует.</p>`;
+      document.getElementById('dayInfoModal').classList.add('active');
+    }
+
+    function closeDayInfo() {
+      playKalimbaNote(523.25);
+      document.getElementById('dayInfoModal').classList.remove('active');
+    }
+
+    /* BREATHING CONTROLLER */
+    let breathInterval = null, isBreathing = false, currentTech = '478';
+    const TECHS = {
+      '478': [{p:'Вдох', t:4}, {p:'Задержка', t:7}, {p:'Выдох', t:8}],
+      'box': [{p:'Вдох', t:4}, {p:'Задержка', t:4}, {p:'Выдох', t:4}, {p:'Задержка', t:4}],
+      'relax': [{p:'Вдох', t:2}, {p:'Выдох', t:4}]
+    };
+
+    function setBreathingTech(t, b) {
+      playKalimbaNote(440);
+      if (isBreathing) stopBreathing();
+      currentTech = t;
+      document.querySelectorAll('.tech-btn').forEach(el => el.classList.remove('active'));
+      b.classList.add('active');
+    }
+
+    function toggleBreathing() {
+      playKalimbaNote(523.25);
+      isBreathing ? stopBreathing() : startBreathing();
+    }
+
+    function startBreathing() {
+      isBreathing = true;
+      document.getElementById('breathStartBtn').innerHTML = `<i class="fa-solid fa-pause"></i> Пауза`;
+      const steps = TECHS[currentTech];
+      let idx = 0, timeLeft = steps[0].t;
+      
+      updateUI(steps[0].p, timeLeft);
+      playBreathingTone(steps[0].p, steps[0].t);
+
+      breathInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          idx = (idx + 1) % steps.length;
+          timeLeft = steps[idx].t;
+          playBreathingTone(steps[idx].p, steps[idx].t);
+        } else {
+          playKalimbaNote(330);
+        }
+        updateUI(steps[idx].p, timeLeft);
+      }, 1000);
+    }
+
+    function stopBreathing() {
+      isBreathing = false;
+      clearInterval(breathInterval);
+      document.getElementById('breathStartBtn').innerHTML = `<i class="fa-solid fa-play"></i> Начать практику`;
+      document.getElementById('breathPhase').innerText = 'Готов?';
+      document.getElementById('breathTimer').innerText = '0';
+      document.getElementById('breathOuter').style.transform = 'scale(1)';
+    }
+
+    function updateUI(p, t) {
+      document.getElementById('breathPhase').innerText = p;
+      document.getElementById('breathTimer').innerText = t;
+      const outer = document.getElementById('breathOuter');
+      outer.style.transform = p === 'Вдох' ? 'scale(1.25)' : p === 'Выдох' ? 'scale(0.92)' : 'scale(1.1)';
+    }
+
+    /* GROUNDING */
+    let gStep = 1;
+    function changeGroundingStep(dir) {
+      playKalimbaNote(587.33);
+      document.getElementById(`gStep${gStep}`).classList.remove('active');
+      gStep += dir;
+      document.getElementById(`gStep${gStep}`).classList.add('active');
+      document.getElementById('gPrevBtn').disabled = (gStep === 1);
+    }
+
+    /* JOURNAL */
+    function saveJournalEntry(e) {
+      e.preventDefault();
+      const text = document.getElementById('journalText').value.trim();
+      if (!text) return;
+      journalData.unshift({ id: Date.now(), date: new Date().toLocaleString(), text });
+      localStorage.setItem('mindcare_journal', JSON.stringify(journalData));
+      document.getElementById('journalText').value = '';
+      playSuccessChime();
+      renderJournal();
+    }
+
+    function renderJournal() {
+      const list = document.getElementById('journalList');
+      if (journalData.length === 0) {
+        list.innerHTML = `<p style="color: var(--text-light); text-align: center; padding: 1rem;">У вас пока нет записей в дневнике.</p>`;
+        return;
+      }
+      list.innerHTML = journalData.map(i => `
+        <div class="entry-card" onclick="openJournalModal(${i.id})">
+          <div class="entry-date">${i.date}</div>
+          <div class="entry-snippet">${i.text}</div>
+        </div>
+      `).join('');
+    }
+
+    function openJournalModal(id) {
+      playKalimbaNote(659.25);
+      const item = journalData.find(x => x.id === id);
+      if (!item) return;
+      currentJournalIdToDel = id;
+      document.getElementById('journalModalDate').innerText = item.date;
+      document.getElementById('journalModalText').innerText = item.text;
+      document.getElementById('journalModal').classList.add('active');
+    }
+
+    function closeJournalModal() {
+      playKalimbaNote(523.25);
+      document.getElementById('journalModal').classList.remove('active');
+    }
+
+    document.getElementById('deleteJournalBtn').onclick = () => {
+      if (confirm("Вы уверены, что хотите удалить эту запись?")) {
+        journalData = journalData.filter(x => x.id !== currentJournalIdToDel);
+        localStorage.setItem('mindcare_journal', JSON.stringify(journalData));
+        closeJournalModal();
+        renderJournal();
+        playKalimbaNote(300);
+      }
+    };
+
+    function generateSupport() {
+      playSuccessChime();
+      const msg = SUPPORT_MESSAGES[Math.floor(Math.random() * SUPPORT_MESSAGES.length)];
+      document.getElementById('supportText').innerText = msg;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderJournal();
+      renderYearGrid();
+    });
+  </script>
+</body>
+</html>
